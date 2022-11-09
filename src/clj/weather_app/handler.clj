@@ -56,7 +56,8 @@
                           :parameters {:path {:item-id int?}}}}]]
      ["/about" {:get {:handler index-handler}}]
      ["/api/test" {:get {:handler api-handler}}]
-     ["/api/forecast/:city" {:get {:handler api/forecast-handler}}]]
+     ["/api/forecast/:city" {:get {:handler api/forecast-handler}}]
+     ["/api/history/:city" {:get {:handler api/history-handler}}]]
     ring-opts)
    (reitit-ring/routes
     (reitit-ring/create-resource-handler {:path "/" :root "/public"})
