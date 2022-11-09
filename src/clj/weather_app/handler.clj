@@ -2,6 +2,7 @@
   (:require
    [reitit.ring :as reitit-ring]
    [weather-app.middleware :refer [middleware]]
+   [weather-app.api :as api]
    [reitit.ring.middleware.muuntaja :as muuntaja]
    [reitit.ring.middleware.parameters :as parameters]
    [muuntaja.core :as m]
@@ -54,7 +55,8 @@
       ["/:item-id" {:get {:handler index-handler
                           :parameters {:path {:item-id int?}}}}]]
      ["/about" {:get {:handler index-handler}}]
-     ["/api/test" {:get {:handler api-handler}}]]
+     ["/api/test" {:get {:handler api-handler}}]
+     ["/api/forecast/:city" {:get {:handler api/forecast-handler}}]]
     ring-opts)
    (reitit-ring/routes
     (reitit-ring/create-resource-handler {:path "/" :root "/public"})
