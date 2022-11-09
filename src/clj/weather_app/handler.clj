@@ -2,6 +2,9 @@
   (:require
    [reitit.ring :as reitit-ring]
    [weather-app.middleware :refer [middleware]]
+   [reitit.ring.middleware.muuntaja :as muuntaja]
+   [reitit.ring.middleware.parameters :as parameters]
+   [muuntaja.core :as m]
    [hiccup.page :refer [include-js include-css html5]]
    [config.core :refer [env]]))
 
@@ -32,6 +35,16 @@
    :headers {"Content-Type" "text/html"}
    :body (loading-page)})
 
+(def ring-opts
+  {:data
+   {:muuntaja m/instance
+    :middleware [parameters/parameters-middleware
+                 muuntaja/format-middleware]}})
+
+(defn api-handler [_]
+  {:status 200
+   :body {:api-data [1 2 3]}})
+
 (def app
   (reitit-ring/ring-handler
    (reitit-ring/router
@@ -40,7 +53,9 @@
       ["" {:get {:handler index-handler}}]
       ["/:item-id" {:get {:handler index-handler
                           :parameters {:path {:item-id int?}}}}]]
-     ["/about" {:get {:handler index-handler}}]])
+     ["/about" {:get {:handler index-handler}}]
+     ["/api/test" {:get {:handler api-handler}}]]
+    ring-opts)
    (reitit-ring/routes
     (reitit-ring/create-resource-handler {:path "/" :root "/public"})
     (reitit-ring/create-default-handler))
